@@ -1,23 +1,69 @@
 package org.joker.template.generate.mybatis;
 
-import freemarker.template.TemplateException;
-import org.joker.template.generate.jdbc.DataModelResolverAdapter;
-import org.joker.template.generate.jdbc.Table;
-import org.joker.template.generate.util.FileUtil;
-import org.joker.template.generate.util.TemplateUtil;
-
 import java.io.IOException;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joker.template.generate.db2j.Class;
+import org.joker.template.generate.db2j.DataModel;
+import org.joker.template.generate.db2j.DataModelResolverAdapter;
+import org.joker.template.generate.db2j.DataTypeResolverAdapter;
+import org.joker.template.generate.db2j.Field;
+import org.joker.template.generate.freemarker.TemplateUtil;
+import org.joker.template.generate.util.FileUtil;
+import org.joker.template.generate.util.NameCaseUtil;
+
+import freemarker.template.TemplateException;
 
 public class MybatisGenerate {
 
-    private static final DataModelResolverAdapter DATA_MODEL_RESOLVER_ADAPTER = new DataModelResolverAdapter();
+        private DataModelResolverAdapter dataModelResolverAdapter = new DataModelResolverAdapter();
+        private DataTypeResolverAdapter dataTypeResolverAdapter = new DataTypeResolverAdapter();
 
-    public static void process(String packageName, String tableSchema, String tableName) throws TemplateException, IOException {
-        Table table = DATA_MODEL_RESOLVER_ADAPTER.resolver(tableSchema, tableName);
-        MybatisJavaModel mybatisJavaModel = new MybatisJavaModel(packageName, table);
-        TemplateUtil.process("mybatis/java_bean.ftl", mybatisJavaModel, FileUtil.getWriter(mybatisJavaModel.getJavaBeanFileName()));
-        TemplateUtil.process("mybatis/mybatis_mapper.ftl", mybatisJavaModel, FileUtil.getWriter(mybatisJavaModel.getMybatisMapperFileName()));
-        TemplateUtil.process("mybatis/mybatis_mapper_xml.ftl", mybatisJavaModel, FileUtil.getWriter(mybatisJavaModel.getMybatisMapperXmlFileName()));
-    }
+        public void generate(MybatisConfig mybatisConfig) throws TemplateException, IOException {
+                DataModel dataModel = dataModelResolverAdapter
+                                .resolver(mybatisConfig.getTableSchema(), mybatisConfig.getTableName());
+                MybaitsDataModel mybaitsDataModel = buildMybaitsDataModel(mybatisConfig, dataModel);
+                TemplateUtil.process("mybatis/entity.ftl", mybaitsDataModel,
+                                FileUtil.getWriter(
+                                                String.format("%s.java", mybaitsDataModel.getEntity().getClassName())));
+                TemplateUtil.process("mybatis/mapper.ftl", mybaitsDataModel,
+                                FileUtil.getWriter(
+                                                String.format("%s.java", mybaitsDataModel.getMapper().getClassName())));
+                TemplateUtil.process("mybatis/mapper.xml.ftl", mybaitsDataModel,
+                                FileUtil.getWriter(
+                                                String.format("%s.xml", mybaitsDataModel.getMapper().getClassName())));
+        }
+
+        private MybaitsDataModel buildMybaitsDataModel(MybatisConfig mybatisConfig, DataModel dataModel) {
+                MybaitsDataModel mybaitsDataModel = new MybaitsDataModel();
+                mybaitsDataModel.setConfig(mybatisConfig);
+                mybaitsDataModel.setTable(dataModel.getTable());
+                mybaitsDataModel.setColumns(dataModel.getColumns());
+                String defultClassName = NameCaseUtil
+                                .underscorecaseToUppercamelcase(dataModel.getTable().getTableName());
+                Class entity = new Class();
+                entity.setPackageName(mybatisConfig.getEntityPackage());
+                entity.setClassName(StringUtils.isBlank(mybatisConfig.getEntityClass()) ? defultClassName
+                                : mybatisConfig.getEntityClass());
+                entity.setClassComment(String.format("%s - Entity", dataModel.getTable().getTableComment()));
+                mybaitsDataModel.setEntity(entity);
+                Class mapper = new Class();
+                mapper.setPackageName(mybatisConfig.getMapperPackage());
+                mapper.setClassName(StringUtils.isBlank(mybatisConfig.getMapperClass())
+                                ? String.format("%sMapper", defultClassName)
+                                : mybatisConfig.getMapperClass());
+                mapper.setClassComment(String.format("%s - Entity", dataModel.getTable().getTableComment()));
+                mybaitsDataModel.setMapper(mapper);
+                List<Field> fields = dataModel.getColumns().stream().map(m -> {
+                        Field field = new Field();
+                        field.setType(dataTypeResolverAdapter.resolver(m.getDataType()));
+                        field.setFieldName(NameCaseUtil.underscorecaseToLowercamelcase(m.getColumnName()));
+                        field.setFieldComment(m.getColumnComment());
+                        return field;
+                }).toList();
+                mybaitsDataModel.setFields(fields);
+                return mybaitsDataModel;
+        }
 
 }

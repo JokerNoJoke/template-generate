@@ -1,6 +1,10 @@
 package org.joker.template.generate.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 public class FileUtil {
 
@@ -18,7 +22,7 @@ public class FileUtil {
             file.createNewFile();
         }
         FileOutputStream fileOutputStream = new FileOutputStream(file);
-        return new OutputStreamWriter(fileOutputStream);
+        return new OutputStreamWriter(fileOutputStream, "UTF-8");
     }
 
 }

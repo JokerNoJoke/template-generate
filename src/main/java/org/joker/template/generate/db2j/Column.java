@@ -1,4 +1,4 @@
-package org.joker.template.generate.jdbc;
+package org.joker.template.generate.db2j;
 
 public class Column {
 
@@ -11,9 +11,9 @@ public class Column {
     private String characterMaximumLength;
     private Boolean isNullable;
     private String columnDefault;
-    private String columnComment;
     private Boolean isPrimaryKey;
     private Boolean isAutoIncrement;
+    private String columnComment;
 
     public String getOrdinalPosition() {
         return ordinalPosition;
@@ -87,14 +87,6 @@ public class Column {
         this.columnDefault = columnDefault;
     }
 
-    public String getColumnComment() {
-        return columnComment;
-    }
-
-    public void setColumnComment(String columnComment) {
-        this.columnComment = columnComment;
-    }
-
     public Boolean getIsPrimaryKey() {
         return isPrimaryKey;
     }
@@ -111,22 +103,12 @@ public class Column {
         this.isAutoIncrement = isAutoIncrement;
     }
 
-    @Override
-    public String toString() {
-        return "Column{" +
-                "ordinalPosition='" + ordinalPosition + '\'' +
-                ", columnName='" + columnName + '\'' +
-                ", dataType='" + dataType + '\'' +
-                ", numericPrecision='" + numericPrecision + '\'' +
-                ", numericScale='" + numericScale + '\'' +
-                ", characterOctetLength='" + characterOctetLength + '\'' +
-                ", characterMaximumLength='" + characterMaximumLength + '\'' +
-                ", isNullable=" + isNullable +
-                ", columnDefault='" + columnDefault + '\'' +
-                ", columnComment='" + columnComment + '\'' +
-                ", isPrimaryKey=" + isPrimaryKey +
-                ", isAutoIncrement=" + isAutoIncrement +
-                '}';
+    public String getColumnComment() {
+        return columnComment;
+    }
+
+    public void setColumnComment(String columnComment) {
+        this.columnComment = columnComment;
     }
 
 }

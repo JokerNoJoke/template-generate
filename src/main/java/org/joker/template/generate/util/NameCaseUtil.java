@@ -4,9 +4,9 @@ public class NameCaseUtil {
 
     private static final char SEPARATOR = '_';
 
-    public static String underlineToCamelLowerCase(String str) {
+    public static String underscorecaseToLowercamelcase(String str) {
         if (str == null) {
-            throw new RuntimeException("underline to camel lower case: str is NULL");
+            throw new RuntimeException("underscore case to lowercamel case: str is NULL");
         }
         StringBuilder sb = new StringBuilder(str.length());
         boolean needUpperCase = false;
@@ -24,17 +24,17 @@ public class NameCaseUtil {
         return sb.toString();
     }
 
-    public static String underlineToCamelUpperCase(String str) {
+    public static String underscorecaseToUppercamelcase(String str) {
         if (null == str) {
-            throw new RuntimeException("underline to camel upper case: str is NULL");
+            throw new RuntimeException("underscore case to uppercame case: str is NULL");
         }
-        str = underlineToCamelLowerCase(str);
+        str = underscorecaseToLowercamelcase(str);
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    public static String camelToUnderlineCase(String str) {
+    public static String camelcaseToUnderscorecase(String str) {
         if (null == str) {
-            throw new RuntimeException("camel to underline case: str is NULL");
+            throw new RuntimeException("camel case to underscore case: str is NULL");
         }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {

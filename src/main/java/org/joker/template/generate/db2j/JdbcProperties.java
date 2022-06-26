@@ -1,4 +1,4 @@
-package org.joker.template.generate.jdbc;
+package org.joker.template.generate.db2j;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,14 +1,14 @@
-package org.joker.template.generate.util;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
+package org.joker.template.generate.freemarker;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 
 public class TemplateUtil {
 
@@ -45,13 +45,15 @@ public class TemplateUtil {
         cfg.setDefaultEncoding("UTF-8");
 
         // Sets how errors will appear.
-        // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
+        // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is
+        // better.
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
         // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
         cfg.setLogTemplateExceptions(false);
 
-        // Wrap unchecked exceptions thrown during template processing into TemplateException-s:
+        // Wrap unchecked exceptions thrown during template processing into
+        // TemplateException-s:
         cfg.setWrapUncheckedExceptions(true);
 
         // Do not fall back to higher scopes when reading a null loop variable:

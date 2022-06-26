@@ -1,15 +1,15 @@
-package org.joker.template.generate.jdbc;
+package org.joker.template.generate.db2j;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-public abstract class AbstractDataModelResolver implements DataModelResolver {
+public final class JdbcUtil {
 
-    private volatile JdbcTemplate jdbcTemplate;
+    private static JdbcTemplate jdbcTemplate;
 
-    protected JdbcTemplate getJdbcTemplate() {
+    public static JdbcTemplate getJdbcTemplate() {
         if (jdbcTemplate == null) {
-            synchronized (AbstractDataModelResolver.class) {
+            synchronized (JdbcUtil.class) {
                 if (jdbcTemplate == null) {
                     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
                     dataSource.setDriverClassName(JdbcProperties.getDriverClassName());
